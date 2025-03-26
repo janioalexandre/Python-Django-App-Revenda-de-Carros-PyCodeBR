@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="post" action="/cars/new" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ new_car_form.as_p }}
+    
+    <br>
+    <input type="submit" value="Add Car">
+</form>
+
+{% endblock %}
