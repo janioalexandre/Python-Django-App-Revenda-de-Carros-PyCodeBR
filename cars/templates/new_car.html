@@ -2,13 +2,15 @@
 
 {% block content %}
 
-<form method="post" action="/cars/new" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    {{ new_car_form.as_p }}
-    
-    <br>
-    <input type="submit" value="Add Car">
-</form>
+        <table>
+            {{ new_car_form.as_table }}
+        </table>
+        <br>
+        <input type="submit" value="Cadastrar" class="btn btn-primary">
+        <a href="/cars" class="btn btn-default">Voltar</a>
+    </form>
 
 {% endblock %}
