@@ -1,9 +1,10 @@
-# Python-Django-App-Revenda-de-Carros-PyCodeBR
+# Python e Django - App de revenda de carros
 Aplicação para gerenciamento de revenda de carros - PyCodeBR
 
 # Principais Funcionalidades 
  - Gestão de Carros
  - Gestão de Marcas 
+ - Gestão de Usuários 
 
 # Validações
  - Valor mínimo do carro deve ser de R$ 20.000
