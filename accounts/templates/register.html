@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+    <br>
     <form method="post">
         {% csrf_token %}
 
@@ -22,10 +22,10 @@
             <label>Confirmação de senha:</label>
             {{ user_form.password2 }}
         </div>
-        
+        <br>
         <div class="form-group">
             <input type="submit" value="Cadastrar">
         </div>
     </form>
-    
+    <br>
 {% endblock %}
