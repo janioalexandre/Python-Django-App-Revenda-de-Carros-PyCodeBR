@@ -1,103 +1,296 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block content %}
+  <!-- Bootstrap Icons already loaded in base.html -->
   <style>
-    .car-card {
-      background-color: #e3e1e1;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    /* Mensagens de alerta */
+    .messages-container {
+      max-width: 1100px;
+      margin: 20px auto 0;
+      padding: 0 20px;
+    }
+
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+
+    .alert-success i {
+      color: #28a745;
+      font-size: 1.2rem;
+    }
+
+    .alert-info {
+      background-color: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+
+    .alert-warning {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+    }
+
+    .alert-error, .alert-danger {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    .alert .close-btn {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .alert .close-btn:hover {
+      opacity: 1;
+    }
+
+    .detail-container {
+      max-width: 1100px;
+      margin: 24px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .detail-header {
+      background: linear-gradient(135deg, #0096c7 0%, #108eb8 100%);
+      color: #fff;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .detail-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .detail-title i { font-size: 1.6rem; }
+
+    .price-pill {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(2px);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
+    .detail-body {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+      padding: 20px 24px 24px;
+    }
+
+    .photo-wrap {
       border-radius: 10px;
       overflow: hidden;
-      text-align: center;
-      transition: all 0.3s ease;
-      max-width: 500px;
-      margin: 20px auto 0;
-      margin-bottom: 20px;
+      background: #f0f3f5;
+      min-height: 260px;
     }
 
-    .car-card:hover {
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-      transform: translateY(-2px);
-    }
-
-    .car-card img {
+    .photo-wrap img {
       width: 100%;
-      height: 200px;
+      height: 100%;
+      max-height: 520px;
       object-fit: cover;
+      display: block;
     }
 
-    .car-card h2 {
-      font-size: 1.5rem;
-      margin: 10px;
+    .specs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
 
-    .car-card p {
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-
-    .buttons-container {
+    .spec {
+      background: #f8fafc;
+      border: 1px solid #eef1f4;
+      border-radius: 10px;
+      padding: 12px 14px;
       display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      margin-bottom: 20px;
+      align-items: center;
+      gap: 10px;
     }
 
-    .btn {
-      display: inline-block;
-      background-color: #0096c7;
-      color: #fff;
+    .spec i { color: #0096c7; font-size: 1.1rem; }
+
+    .spec .label { color: #54606b; font-size: 0.85rem; }
+    .spec .value { font-weight: 700; color: #222; }
+
+    .description {
+      margin-top: 14px;
+      background: #fff;
+      border: 1px solid #eef1f4;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .description h4 {
+      margin: 0 0 8px 0;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #0096c7;
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btnx {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 4px;
+      border-radius: 8px;
+      padding: 12px 16px;
       cursor: pointer;
-      transition: background-color 0.3s ease-in-out;
-      margin: 0 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
 
-    .btn:hover {
-      background-color: #108eb8;
-    }
+    .btnx:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+    .btn-primaryx { background: #0096c7; color: #fff; }
+    .btn-primaryx:hover { background: #108eb8; }
+    .btn-dangerx { background: #d9534f; color: #fff; }
+    .btn-dangerx:hover { background: #c9302c; }
+    .btn-secondaryx { background: #6c757d; color: #fff; }
+    .btn-secondaryx:hover { background: #5a6268; }
 
-    .btn-danger {
-      background-color: #d9534f;
-      text-decoration: none !important;
-    }
-
-    .btn-danger:hover {
-      background-color: #d2221c;
-    }
-
-    .error-message {
-      color: #d9534f;
-      font-size: 14px;
-      margin-top: 5px;
-    }
-
-    a {
-      text-decoration: none !important;
+    @media (max-width: 900px) {
+      .detail-body { grid-template-columns: 1fr; }
     }
   </style>
-  <div class="car-card">
-      {% if object.photo %}
-        <img src="{{ object.photo.url }}" alt="{{ object.model }} - {{ object.brand }}">
-      {% else %}
-        <p class="no-photo">Foto não disponível</p>
-      {% endif %}
-      <h2>{{ object.brand }} {{ object.model }}</h2>
-      <p><strong>Ano de fabricação:</strong> {{ object.factory_year }}</p>
-      <p><strong>Ano do modelo:</strong> {{ object.model_year }}</p>
-      <p><strong>Placa:</strong> {{ object.plate }}</p>
-      <p><strong>Preço:</strong> R$ {{ object.value }}</p>
-      {% if object.bio %}
-        <p><strong>Bio:</strong> {{ object.bio }}</p>
-      {% endif %}  
-  </div>
-  {% if user.is_authenticated %}
-    <div class="buttons-container">
-      <a href="{% url 'car_update' pk=object.pk %}" class="btn btn-primary">Editar</a>
-      <a href="{% url 'car_delete' pk=object.pk %}" class="btn btn-danger">Deletar</a>
+
+  <!-- Mensagens de Sucesso/Erro -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>{{ message|safe }}</span>
+          <button type="button" class="close-btn" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      {% endfor %}
     </div>
   {% endif %}
+
+  <div class="detail-container">
+    <div class="detail-header">
+      <h1 class="detail-title"><i class="bi bi-car-front-fill"></i> {{ object.brand }} - {{ object.model }}</h1>
+      <div class="price-pill">R$ {{ object.value|floatformat:0|intcomma }}</div>
+    </div>
+
+    <div class="detail-body">
+      <div class="photo-wrap">
+        {% if object.photo %}
+          <img src="{{ object.photo.url }}" alt="{{ object.brand }} - {{ object.model }}">
+        {% else %}
+          <div style="height: 100%; display:flex; align-items:center; justify-content:center; color:#777;">
+            <i class="bi bi-image" style="font-size: 2rem; margin-right: 8px;"></i> Foto não disponível
+          </div>
+        {% endif %}
+      </div>
+
+      <div>
+        <div class="specs">
+          <div class="spec">
+            <i class="bi bi-calendar-event"></i>
+            <div>
+              <div class="label">Ano de fabricação</div>
+              <div class="value">{{ object.factory_year }}</div>
+            </div>
+          </div>
+          <div class="spec">
+            <i class="bi bi-calendar2-check"></i>
+            <div>
+              <div class="label">Ano do modelo</div>
+              <div class="value">{{ object.model_year }}</div>
+            </div>
+          </div>
+          <div class="spec">
+            <i class="bi bi-hash"></i>
+            <div>
+              <div class="label">Placa</div>
+              <div class="value">{{ object.plate|default:"-" }}</div>
+            </div>
+          </div>
+          <div class="spec">
+            <i class="bi bi-cash-coin"></i>
+            <div>
+              <div class="label">Preço</div>
+              <div class="value">R$ {{ object.value|floatformat:0|intcomma }}</div>
+            </div>
+          </div>
+        </div>
+
+        {% if object.bio %}
+          <div class="description">
+            <h4><i class="bi bi-stars"></i> Descrição</h4>
+            <p style="margin: 0; line-height: 1.6; color: #333;">{{ object.bio }}</p>
+          </div>
+        {% endif %}
+
+        <div class="actions">
+          <a href="{% url 'cars_list' %}" class="btnx btn-secondaryx"><i class="bi bi-arrow-left-circle"></i> Voltar</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'car_update' pk=object.pk %}" class="btnx btn-primaryx"><i class="bi bi-pencil-square"></i> Editar</a>
+            <a href="{% url 'car_delete' pk=object.pk %}" class="btnx btn-dangerx"><i class="bi bi-trash"></i> Deletar</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

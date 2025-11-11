@@ -4,35 +4,119 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
     body {
         font-family: 'Open Sans', sans-serif;
         background-color: #f7f7f7;
         color: #333;
-        margin: 0;
-        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
     }
 
     header {
         background-color: #0096c7;
         color: #fff;
-        text-align: center;
+        text-align: center;''
     }
 
-    footer {
-        background-color: #ccc;
-        color: #333;
-        padding: 20px;
-        text-align: center;
+    main {
+        flex: 1;
     }
+
+  .site-footer {
+    background: #2e2e2e; /* ligeiramente mais claro */
+    color: #dcdcdc;
+    margin-top: auto;
+    padding: 12px 16px; /* menor altura */
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.12);
+    font-size: 14px;
+  }
+
+  .site-footer .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .site-footer .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #f0f0f0;
+  }
+
+  .site-footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .site-footer .footer-links a {
+    color: #d5d5d5;
+    text-decoration: none;
+    padding: 6px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    font-size: 13px;
+  }
+
+  .site-footer .footer-links a:hover {
+    background-color: #3a3a3a; /* hover um tom acima */
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .site-footer .footer-copy {
+    font-size: 13px;
+    color: #c9c9c9;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    letter-spacing: .3px;
+  }
+
+  @media (max-width: 768px) {
+    .site-footer .footer-content {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .site-footer .footer-links {
+      justify-content: center;
+    }
+  }
 
     nav {
-        background-color: #0096c7;
+        background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
         color: #fff;
-        height: 50px;
+        height: 60px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 0 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     nav ul {
@@ -40,30 +124,96 @@
         margin: 0;
         padding: 0;
         display: flex;
+        align-items: center;
+    }
+
+    nav ul.nav-right {
+        margin-left: auto;
     }
 
     nav ul li {
-        margin: 0 10px;
+        margin: 0 5px;
     }
 
     nav ul li a {
         color: #fff;
         text-decoration: none;
-        font-size: 16px;
-        padding: 15px;
+        font-size: 15px;
+        padding: 10px 16px;
         transition: all 0.3s ease;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    nav ul li a i {
+        font-size: 18px;
     }
 
     nav ul li a:hover {
-        background-color: #32bbe8;
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+
+    nav ul li:first-child a {
+        font-weight: bold;
+        font-size: 20px;
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+    }
+
+    nav ul li:first-child a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    nav ul.nav-right li {
+        color: #fff;
+        padding: 10px 15px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    nav ul.nav-right li a {
+        font-weight: normal;
     }
 
     nav ul li.active a {
-        background-color: #666;
+        background-color: rgba(255, 255, 255, 0.25);
     }
 
     nav ul li.active a:hover {
-        background-color: #999;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        nav {
+            flex-direction: column;
+            height: auto;
+            padding: 15px;
+        }
+
+        nav ul {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav ul.nav-right {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+
+        nav ul li a {
+            font-size: 14px;
+            padding: 8px 12px;
+        }
+
+        nav ul li:first-child a {
+            font-size: 18px;
+        }
     }
 
   </style>
@@ -72,20 +222,23 @@
   <header>
     <nav>
       <ul>
+        <li><a href="{% url 'home' %}"><i class="bi bi-shop"></i> Jânio Multimarcas</a></li>
+        <li><a href="{% url 'cars_list' %}"><i class="bi bi-car-front-fill"></i> Carros</a></li>
         {% if user.is_authenticated %}
-          <li>Olá, {{ user.username }}</li>
-          <li><a href="{% url 'new_car' %}">Cadastrar Carro</a></li>
-        {% else %}
-        <li><a href="{% url 'register' %}">Cadastre-se</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
+          <li><a href="{% url 'new_car' %}"><i class="bi bi-plus-circle-fill"></i> Cadastrar Carro</a></li>
         {% endif %}
-        
-        <li><a href="{% url 'cars_list' %}">Carros</a></li>
+      </ul>
+      
+      <ul class="nav-right">
         {% if user.is_authenticated %}
           {% if user.is_superuser %}
-            <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            <li><a href="{% url 'admin:index' %}"><i class="bi bi-shield-lock-fill"></i> Admin</a></li>
           {% endif %}
-          <li><a href="{% url 'logout' %}">Sair</a></li>
+          <li><i class="bi bi-person-circle"></i> Olá, {{ user.username }}</li>
+          <li><a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Sair</a></li>
+        {% else %}
+          <li><a href="{% url 'register' %}"><i class="bi bi-person-plus-fill"></i> Cadastre-se</a></li>
+          <li><a href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
         {% endif %}
       </ul>
     </nav>
@@ -96,8 +249,20 @@
     {% endblock %}
   </main>
 
-  <footer>
-    <p>&copy; 2025 PycodeBR Multimarcas</p>
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="brand"><i class="bi bi-shop"></i> Jânio Multimarcas</div>
+      <ul class="footer-links">
+        <li><a href="{% url 'home' %}"><i class="bi bi-house-door"></i> Início</a></li>
+        <li><a href="{% url 'cars_list' %}"><i class="bi bi-car-front"></i> Carros</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'new_car' %}"><i class="bi bi-plus-circle"></i> Cadastrar</a></li>
+        {% else %}
+          <li><a href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+        {% endif %}
+      </ul>
+      <div class="footer-copy">&copy; {% now "Y" %} Jânio Multimarcas</div>
+    </div>
   </footer>
 </body>
 </html>

@@ -1,31 +1,201 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <br>
-    <form method="post">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+  <style>
+    .auth-container {
+      max-width: 450px;
+      margin: 50px auto;
+      padding: 0;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .auth-header {
+      background: linear-gradient(135deg, #0096c7 0%, #108eb8 100%);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .auth-header h1 {
+      font-size: 1.8rem;
+      margin: 0 0 10px 0;
+      font-weight: 600;
+    }
+
+    .auth-header p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .auth-body {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0096c7;
+      box-shadow: 0 0 0 3px rgba(0, 150, 199, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #0096c7;
+      color: #fff;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background-color: #108eb8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 150, 199, 0.3);
+    }
+
+    .auth-footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .auth-footer a {
+      color: #0096c7;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .errorlist {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 0 0;
+    }
+
+    .errorlist li {
+      color: #d9534f;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 5px;
+      display: block;
+    }
+
+  </style>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1><i class="bi bi-person-plus"></i> Cadastro</h1>
+      <p>Crie sua conta para acessar o sistema</p>
+    </div>
+    
+    <div class="auth-body">
+      <form method="post">
         {% csrf_token %}
-
+        
         <div class="form-group">
-            {{ user_form.username.errors }}
-            <label>Usuário: </label>
-            {{ user_form.username }}
+          <label for="id_username">
+            <i class="bi bi-person"></i> Usuário
+          </label>
+          {{ user_form.username }}
+          {% if user_form.username.errors %}
+            <ul class="errorlist">
+              {% for error in user_form.username.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% if user_form.username.help_text %}
+            <span class="help-text">{{ user_form.username.help_text }}</span>
+          {% endif %}
         </div>
 
         <div class="form-group">
-            {{ user_form.password1.errors }}
-            <label>Senha:</label>
-            {{ user_form.password1 }}
+          <label for="id_password1">
+            <i class="bi bi-lock"></i> Senha
+          </label>
+          {{ user_form.password1 }}
+          {% if user_form.password1.errors %}
+            <ul class="errorlist">
+              {% for error in user_form.password1.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% if user_form.password1.help_text %}
+            <span class="help-text">{{ user_form.password1.help_text }}</span>
+          {% endif %}
         </div>
 
         <div class="form-group">
-            {{ user_form.password2.errors }}
-            <label>Confirmação de senha:</label>
-            {{ user_form.password2 }}
+          <label for="id_password2">
+            <i class="bi bi-lock-fill"></i> Confirmação de Senha
+          </label>
+          {{ user_form.password2 }}
+          {% if user_form.password2.errors %}
+            <ul class="errorlist">
+              {% for error in user_form.password2.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% if user_form.password2.help_text %}
+            <span class="help-text">{{ user_form.password2.help_text }}</span>
+          {% endif %}
         </div>
-        <br>
-        <div class="form-group">
-            <input type="submit" value="Cadastrar">
-        </div>
-    </form>
-    <br>
+
+        <button type="submit" class="btn-submit">
+          <i class="bi bi-check-circle"></i> Cadastrar
+        </button>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      Já tem uma conta? <a href="{% url 'login' %}">Faça login aqui</a>
+    </div>
+  </div>
+
 {% endblock %}

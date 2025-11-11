@@ -1,56 +1,191 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block content %}
+  <!-- Bootstrap Icons are already loaded in base.html -->
   <style>
+    /* Mensagens de alerta */
+    .messages-container {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 0 20px;
+    }
+
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+
+    .alert-success i {
+      color: #28a745;
+      font-size: 1.2rem;
+    }
+
+    .alert-info {
+      background-color: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+
+    .alert-warning {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+    }
+
+    .alert-error, .alert-danger {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    .alert .close-btn {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .alert .close-btn:hover {
+      opacity: 1;
+    }
+
     .car-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      /* Use auto-fill to keep column slots even when few items (prevents stretching) */
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
       margin: 0 auto;
       max-width: 1200px;
       padding: 20px;
+      align-content: start;
+    }
+
+    /* Anchor wrapper so the whole card is clickable */
+    .card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 12px;
+    }
+
+    .card-link:focus .car-card,
+    .card-link:hover .car-card {
+      outline: none;
     }
 
     .car-card {
-      background-color: #e3e1e1;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
+      background-color: #ffffff;
+      border-radius: 12px;
       overflow: hidden;
-      text-align: center;
-      transition: all 0.3s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      /* Fix card height to keep consistent size regardless of number of results */
+      height: 320px;
+      min-height: 320px;
     }
 
-    .car-card:hover {
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-        transform: translateY(-2px);
-    }
+  .car-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  }
 
     .car-card img {
       width: 100%;
       height: 200px;
       object-fit: cover;
+      display: block;
+      flex-shrink: 0; /* ensure image height stays fixed */
     }
 
-    .car-card h3 {
-        font-size: 20px;
-        margin-top: 10px;
-        margin-bottom: 5px;
+    /* New modern card sections */
+    .card-image {
+      position: relative;
+      background-color: #f0f3f5;
+      height: 200px;
+      min-height: 200px;
     }
 
-    .car-card h2 {
-      font-size: 1.5rem;
-      margin: 10px;
+    /* price badge removed: price will be shown in meta row */
+
+    .card-body {
+      padding: 14px 16px 0 16px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .car-card p {
-      font-size: 1rem;
-      margin-bottom: 10px;
+    .card-body h3 {
+      margin: 6px 0 8px;
+      font-size: 1.15rem;
+      line-height: 1.3;
     }
 
-    @media (max-width: 768px) {
+    .card-body h3 a {
+      color: #222;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body h3 a:hover {
+      color: #0096c7;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #555;
+      font-size: 0.95rem;
+      padding-bottom: 12px;
+      /* Stick meta to the bottom of the card body for consistency */
+      margin-top: auto;
+    }
+
+    .meta i { color: #0096c7; }
+
+    /* Removed footer and button styles as the whole card is now a link */
+
+    @media (max-width: 992px) {
       .car-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .car-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       }
     }
 
@@ -58,68 +193,126 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+        margin-top: 20px;
         text-align: center;
         padding: 20px;
     }
 
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        color: #0096c7;
+        font-size: 20px;
+        pointer-events: none;
+    }
+
     input[type="text"] {
-        padding: 10px;
+        flex: 1;
+        padding: 14px 20px 14px 45px;
         font-size: 16px;
         border: 2px solid #e3e1e1;
-        border-radius: 4px;
-        margin-right: 10px;
-        transition: border-bottom-color 0.3s ease-in-out;
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+        transition: all 0.3s ease;
     }
 
     input[type="text"]:focus {
         outline: none;
-        border-bottom-color: #e3e1e1;
+        border-color: #0096c7;
+        background-color: #f8f9fa;
     }
 
     button[type="submit"] {
         background-color: #0096c7;
         color: #fff;
         border: none;
-        padding: 10px 20px;
+        padding: 14px 30px;
         font-size: 16px;
-        border-radius: 4px;
+        border-radius: 0 8px 8px 0;
         cursor: pointer;
-        transition: background-color 0.3s ease-in-out;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
     }
 
     button[type="submit"]:hover {
         background-color: #108eb8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 150, 199, 0.3);
     }
 
-    a {
-      font-size: 18px;
-      color: #333;
-      text-decoration: none;
+    button[type="submit"] i {
+        font-size: 18px;
     }
 
-    a:hover {
-      color: #0096c7;
-    }
+    /* Avoid global anchor overrides that affect the main navbar on hover */
   </style>
 
+  <!-- Mensagens de Sucesso/Erro -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>{{ message|safe }}</span>
+          <button type="button" class="close-btn" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <form method="GET" action="{% url 'cars_list' %}">
-    <input type="text" name="search" placeholder="Buscar carro...">
-    <button type="submit">Buscar</button>
+    <div class="search-container">
+      <i class="bi bi-search search-icon"></i>
+  <input type="text" name="search" placeholder="Buscar carro por marca, modelo ou ano..." value="{{ request.GET.search }}">
+      <button type="submit">
+        <i class="bi bi-search"></i>
+        Buscar
+      </button>
+    </div>
   </form>
 
   <div class="car-grid">
     {% if cars %}
       {% for car in cars %}
-        <a href="{% url 'car_detail' car.pk %}">
+        <a href="{% url 'car_detail' car.pk %}" class="card-link">
           <div class="car-card">
-            {% if car.photo %}
-              <img src="{{ car.photo.url }}" alt="{{ car.model }} - {{ car.brand }}">
-            {% else %}
-              <p class="no-photo">Foto não disponível</p>
-            {% endif %}
-            <h2>{{ car.brand }} {{ car.model }}</h2>
-            <p>{{ car.factory_year }} - R$ {{ car.value }}</p>
+            <div class="card-image">
+              {% if car.photo %}
+                <img src="{{ car.photo.url }}" alt="{{ car.model }} - {{ car.brand }}">
+              {% else %}
+                <div class="no-photo" style="height: 100%; display:flex; align-items:center; justify-content:center; color:#777; background:#f0f3f5;">
+                  <i class="bi bi-image" style="font-size: 2rem; margin-right: 8px;"></i> Foto não disponível
+                </div>
+              {% endif %}
+              
+            </div>
+            <div class="card-body">
+              <h3>
+                <i class="bi bi-car-front-fill"></i> {{ car.brand }} - {{ car.model }}
+              </h3>
+              <div class="meta">
+                <span><i class="bi bi-calendar-event"></i> {{ car.factory_year }}</span>
+                <span><i class="bi bi-cash-coin"></i> R$ {{ car.value|floatformat:0|intcomma }}</span>
+              </div>
+            </div>
           </div>
         </a>
       {% endfor %}
